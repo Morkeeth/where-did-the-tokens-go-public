@@ -8,7 +8,8 @@ from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
-def read_usage(roots, attribute=True):
+def read_usage(roots, attribute=False):
+    """Read chosen counters; structural attribution and folder hints require opt-in."""
     from .attribution import structural_context, assignment, display_basename
     rows, issues, session_index, pending = [], 0, {}, []
     for harness, root in roots:
@@ -19,7 +20,7 @@ def read_usage(roots, attribute=True):
             buckets, seen, previous, bounds = {}, {}, {}, {}
             last_signature, interval_index = None, 0
             current_model = 'Unknown model'
-            folder = 'Unknown folder'
+            folder = 'Unknown folder' if attribute else 'Hidden folder'
             context = {'project':'Unknown','uncertain':True}
             session = hashlib.sha256(str(path.resolve()).encode()).hexdigest()[:12]
             try:
@@ -31,7 +32,7 @@ def read_usage(roots, attribute=True):
                             payload = event.get('payload') or {}
                             if isinstance(payload,dict) and payload.get('model'):current_model=str(payload['model'])[:120]
                             cwd = event.get('cwd') or (payload.get('cwd') if event.get('type') == 'session_meta' else None)
-                            if cwd:folder = display_basename(str(cwd))[:80] or 'Root folder'
+                            if attribute and cwd:folder = display_basename(str(cwd))[:80] or 'Root folder'
                             stamp = str(event.get('timestamp', ''))[:10]
                             if len(stamp) != 10:continue
                             message = event.get('message') or {}
@@ -66,7 +67,7 @@ def read_usage(roots, attribute=True):
                 file_rows=[]
                 for key,values in buckets.items():
                     day,model,project,category,pe,ce,review,row_folder,interval=key
-                    file_rows.append(dict(session=session,folder=row_folder,interval_index=interval,interval_start=bounds[key][0],interval_end=bounds[key][1],day=day,model=model,harness=harness,project=project,work_category=category,project_evidence=pe,category_evidence=ce,review_required=review,attribution_scope='recorded counter interval metadata; heuristic, not exact billing',input=values[0],output=values[1],cache_read=values[2],cache_write=values[3]))
+                    file_rows.append(dict(session=session,folder=row_folder,interval_index=interval,interval_start=bounds[key][0],interval_end=bounds[key][1],day=day,model=model,harness=harness,project=project,work_category=category,project_evidence=pe,category_evidence=ce,review_required=review,attribution_scope='recorded counter interval metadata; heuristic, not exact billing' if attribute else 'counter records only',input=values[0],output=values[1],cache_read=values[2],cache_write=values[3]))
                 projects={r['project'] for r in file_rows if r['project']!='Unknown'}
                 mixed=len(projects)>1
                 for row in file_rows:row.update(session_mixed=mixed,review_required=row['review_required'] or mixed)
@@ -79,7 +80,7 @@ def read_usage(roots, attribute=True):
         if len(candidates)==1:
             for row in file_rows:
                 if row['project']=='Unknown':row.update(project=next(iter(candidates)),project_evidence='parent session metadata; inferred',review_required=True)
-    return {'schema':'local-token-usage/2','rows':rows,'issues':issues,'source':'Local usage counters and consented structural metadata. No prompt/reply text or full paths retained.','attribution_method':'Project identity and work category are independent heuristic suggestions. Mixed or uncertain sessions require review; counters are conserved, never prorated.'}
+    return {'schema':'local-token-usage/2','rows':rows,'issues':issues,'source':('Local usage counters and consented structural metadata.' if attribute else 'Local usage counters only; structural metadata excluded.')+' No prompt/reply text or full paths retained.','attribution_method':'Project identity and work category are independent heuristic suggestions. Mixed or uncertain sessions require review; counters are conserved, never prorated.'}
 
 
 def demo():

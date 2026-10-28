@@ -49,12 +49,12 @@ For programmatic use, a caller explicitly chooses the directories to read:
 from tokens.inventory import read_usage
 from tokens.pricing import estimate_usage
 
-usage = read_usage([("Claude Code", "/absolute/path/to/chosen/jsonl-root")], attribute=False)
+usage = read_usage([("Claude Code", "/absolute/path/to/chosen/jsonl-root")])
 # Structural metadata is optional: pass attribute=True only for that scope.
 estimated = estimate_usage(usage, rates={})  # No configured model prices: unknown.
 ```
 
-Library calls do not open a browser, scan by themselves on import, contact a provider or execute recorded commands. They read the roots supplied by the caller when invoked. Counter results exclude prompt/reply prose. For compatibility, the library defaults to structural attribution and returns folder basenames; pass attribute=False to disable attribution. The browser and CLI hide folder hints unless separately allowed. Project metadata and folder basenames may themselves be sensitive.
+Library calls do not open a browser, scan by themselves on import, contact a provider or execute recorded commands. They read the roots supplied by the caller when invoked. Counter results exclude prompt/reply prose. The library defaults to attribute=False: project/activity attribution is Unknown and folder basenames are hidden. Pass attribute=True only with permission to return structural attribution and folder basenames. The browser and CLI hide folder hints unless separately allowed. Project metadata and folder basenames may themselves be sensitive.
 
 ## Pricing
 
@@ -115,4 +115,4 @@ The static demo uses embedded synthetic data with browser-side interactions and 
 
 With Python build tools available, run `python3 tools/build_release.py /path/to/output`. It creates a wheel, source distribution, source ZIP, skill ZIP and a static synthetic demo. Release files are built from an explicit source allowlist. Local data, credentials, build intermediates, private configuration, screenshots and Git history are excluded.
 
-Run `python3 -m unittest discover -s tests`. The release audit scans source, every file in archives, static output and all Git revisions. Such a scan supports the clean-source provenance; keyword matching alone cannot prove that arbitrary data is synthetic.
+Run `python3 -m unittest discover -s tests`. Run `python3 tools/audit_release.py /path/to/output` to scan source, every file in archives and static output, including from an extracted source ZIP or plain folder. Add `--history` only in a Git checkout to scan all Git revisions; extracted archives have no history and this option fails with an explicit error. Such a scan supports the clean-source provenance; keyword matching alone cannot prove that arbitrary data is synthetic.

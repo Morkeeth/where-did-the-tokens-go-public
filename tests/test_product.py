@@ -28,6 +28,11 @@ class ProductTest(unittest.TestCase):
             without=read_usage([('Claude Code',str(logs))],attribute=False)
             self.assertEqual(sum(r['input']+r['output'] for r in without['rows']),33)
             self.assertTrue(all(r['project']=='Unknown' and r['work_category']=='Unknown' for r in without['rows']))
+            default=read_usage([('Claude Code',str(logs))])
+            self.assertEqual(default,without)
+            self.assertTrue(all(r['folder']=='Hidden folder' and r['attribution_scope']=='counter records only' for r in default['rows']))
+            for private in (str(root),'alpha','beta','SendMessage'):
+                self.assertNotIn(private,json.dumps(default))
             self.assertEqual(path.read_bytes(),original)
 
     def test_codex_interval_metadata_and_parent_inference(self):

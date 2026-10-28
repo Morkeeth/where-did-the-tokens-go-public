@@ -47,8 +47,16 @@ def inspect(name,content,terms):
 
 def audit(output,terms=(),history=False):
     checked=0;failures=[]
-    tracked=subprocess.check_output(['git','ls-files'],cwd=ROOT,text=True).splitlines()
-    # The pre-commit candidate is checked from its explicit source files too.
+    try:
+        git_root=subprocess.check_output(['git','rev-parse','--show-toplevel'],cwd=ROOT,text=True,stderr=subprocess.DEVNULL).strip()
+        if Path(git_root).resolve()!=ROOT.resolve():raise ValueError('Source folder is not its own Git repository')
+        tracked=subprocess.check_output(['git','ls-files'],cwd=ROOT,text=True,stderr=subprocess.DEVNULL).splitlines()
+        has_git=True
+    except (subprocess.CalledProcessError,FileNotFoundError,ValueError):
+        tracked=[];has_git=False
+    if history and not has_git:
+        raise ValueError('--history requires the source folder to be a Git repository; extracted source archives contain no Git history')
+    # Plain source folders and pre-commit candidates use the shipped allowlist.
     if not tracked:
         from build_release import FILES
         tracked=FILES
@@ -75,6 +83,8 @@ def audit(output,terms=(),history=False):
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('output',type=Path);parser.add_argument('--deny-file',type=Path);parser.add_argument('--history',action='store_true');args=parser.parse_args()
     terms=[s.strip() for s in args.deny_file.read_text().splitlines() if s.strip()] if args.deny_file else []
-    result=audit(args.output,terms,args.history);print(json.dumps(result,indent=2));return bool(result['failures'])
+    try:result=audit(args.output,terms,args.history)
+    except (ValueError,OSError,subprocess.CalledProcessError) as error:parser.error(str(error))
+    print(json.dumps(result,indent=2));return bool(result['failures'])
 
 if __name__=='__main__':raise SystemExit(main())

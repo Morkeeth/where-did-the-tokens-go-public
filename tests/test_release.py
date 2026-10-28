@@ -4,6 +4,9 @@ import io
 import json
 from pathlib import Path
 import tempfile
+import shutil
+import subprocess
+import sys
 import unittest
 import zipfile
 from tokens.pricing import estimate_usage,load_rates
@@ -50,3 +53,22 @@ class Release(unittest.TestCase):
         failures=[]
         for name,content in audit.entries('outer.zip',outer.getvalue()):failures+=audit.inspect(name,content,[canary])
         self.assertEqual(len(failures),1);self.assertIn('nested.zip!data.txt',failures[0][0])
+
+    def test_audit_plain_source_and_source_zip_without_git(self):
+        from tools.build_release import FILES
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary);plain=base/'plain';plain.mkdir();archive_path=base/'source.zip'
+            with zipfile.ZipFile(archive_path,'w') as archive:
+                for filename in FILES:
+                    target=plain/filename;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/filename,target)
+                    archive.write(ROOT/filename,filename)
+            extracted=base/'extracted'
+            with zipfile.ZipFile(archive_path) as archive:archive.extractall(extracted)
+            for source in (plain,extracted):
+                output=source/'artifacts';output.mkdir();(output/'example.txt').write_text('Synthetic audit example')
+                command=[sys.executable,str(source/'tools/audit_release.py'),str(output)]
+                result=subprocess.run(command,cwd=source,capture_output=True,text=True)
+                self.assertEqual(result.returncode,0,result.stderr)
+                report=json.loads(result.stdout);self.assertGreater(report['checked_entries'],len(FILES));self.assertEqual(report['failures'],[])
+                history=subprocess.run(command+['--history'],cwd=source,capture_output=True,text=True)
+                self.assertNotEqual(history.returncode,0);self.assertIn('--history requires',history.stderr);self.assertNotIn('Traceback',history.stderr)

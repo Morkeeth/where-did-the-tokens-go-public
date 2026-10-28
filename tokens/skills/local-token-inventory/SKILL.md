@@ -13,6 +13,8 @@ Install the supplied wheel with `python -m pip install ./local_token_inventory-0
 
 Open the printed address. Let the user choose Claude Code and/or Codex and connect the desired local JSONL directories. Counter permission, structural metadata suggestions, optional folder hints and per-session transcript text are distinct controls. Cursor counters, cloud-only history and deleted records are unsupported. Missing compatible records do not prove no usage.
 
+For Python library use, `read_usage(roots)` defaults to counters alone (`attribute=False`), with Unknown project/activity labels and hidden folder basenames. Only pass `attribute=True` after permission for structural attribution and folder basenames.
+
 ## Consented review
 
 The agent CLI only accepts an HTTP loopback address. For a non-default port, pass `--url` with the printed address.
