@@ -36,14 +36,14 @@ def main():
         if artifact.is_file():shutil.copy2(artifact,static/'downloads'/artifact.name)
     page=(ROOT/'tokens/web/inventory.html').read_text()
     demo=estimate_usage(sample_usage(),SAMPLE_RATES)
-    replacements={'__SCAN_TOKEN__':'synthetic-browser-only','__STATIC_DEMO__':'true','__DEMO_PAYLOAD__':json.dumps(demo).replace('<','\\u003c'),'__RUN_MODE__':'Synthetic demo · invented data','__CONNECT_LABEL__':'Explore synthetic example','__CONNECT_EXPLAIN__':'Invented projects and counters, processed entirely in this browser. No filesystem or local server access.','__CONNECT_STATUS__':'Synthetic data only.'}
+    replacements={'__SCAN_TOKEN__':'synthetic-browser-only','__STATIC_DEMO__':'true','__DEMO_PAYLOAD__':json.dumps(demo).replace('<','\\u003c'),'__RUN_MODE__':'Synthetic mock-up · invented data','__CONNECT_LABEL__':'Explore synthetic example','__CONNECT_EXPLAIN__':'Invented projects and counters, processed entirely in this browser. No filesystem or local server access.','__CONNECT_STATUS__':'Synthetic data only.'}
     for old,new in replacements.items():page=page.replace(old,new)
     policy="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; base-uri 'none'; form-action 'none'"
     page=page.replace('<title>', '<meta http-equiv="Content-Security-Policy" content="'+policy+'"><title>',1)
     page=page.replace('</footer>', ' <a href="packages.html">Python packages and skill</a></footer>')
     (static/'index.html').write_text(page)
     links=''.join('<li><a href="downloads/'+p.name+'">'+p.name+'</a></li>' for p in sorted((static/'downloads').iterdir()))
-    (static/'packages.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Private installation packages</title><h1>Run privately</h1><p>Download a wheel, source distribution, source ZIP or setup skill. These files contain code and synthetic examples only.</p><ul>'+links+'</ul><p><a href="index.html">Back to synthetic demo</a></p></html>')
+    (static/'packages.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Private installation packages</title><h1>Run privately</h1><p>This public view is a synthetic mock-up. To see your own usage, follow the <a href="https://github.com/Morkeeth/where-did-the-tokens-go-public#start-here-macos-or-linux">step-by-step setup on GitHub</a>. The wheel already includes the Python library, local app and skill. No account or API key is needed.</p><p>Download a wheel, source distribution, source ZIP or setup skill. These files contain code and synthetic examples only.</p><ul>'+links+'</ul><p><a href="index.html">Back to synthetic demo</a></p></html>')
     print(output)
 
 if __name__=='__main__':main()

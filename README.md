@@ -1,62 +1,105 @@
 # Local Token Inventory
 
-See what your coding-agent usage supported. Project identity stays separate from agent communication and other activity. Review uncertain intervals without changing their recorded counters.
+A private, playful view of what your coding-agent usage supported. See projects, review uncertain work and keep agent communication attached to the project it serves.
 
-The public demo contains entirely invented projects, counters, model names and rates. It has no connection to anyone's private dashboard. Your installed app runs on your own machine; no account or API key is required by the inventory.
+[Try the synthetic mock-up](https://morkeeth.github.io/where-did-the-tokens-go-public/) · [Download packages](https://morkeeth.github.io/where-did-the-tokens-go-public/packages.html)
 
-Public companion: https://github.com/Morkeeth/where-did-the-tokens-go-public
+**The public demo is a synthetic mock-up.** Every project, counter, model name and rate is invented. It shows how your own private usage view could look; it does not connect to your computer or import your records. To see your own usage, install the local app below.
 
-The repository and release publication are separate from the private local app. No package-index publication is required.
+**The Python library is already available.** The downloadable wheel contains the library, browser app, two CLI commands and setup skill. Install that wheel directly; this project does not claim a PyPI package. No inventory account, API key or third-party runtime dependency is required.
 
-## Run privately
+## Start here: macOS or Linux
 
-Requires Python 3.10 or newer and a browser. The runtime has no third-party Python dependencies.
+You need Python **3.10 or newer**, its `venv`/`pip` support, a terminal and a browser. Check `python3 --version` first. If Python is missing, install a current version from [python.org](https://www.python.org/downloads/). On Debian/Ubuntu, a missing `venv` or `ensurepip` message usually means you need the distribution's `python3-venv` package. The app does not install or sign in to Claude Code or Codex for you.
 
-From the source ZIP, open a terminal in its extracted directory:
+Verification: the fresh-home wheel install, demo and private consent path were exercised on macOS. Ubuntu CI has exercised the source tests and release build; this onboarding pass has not independently run the fresh-install commands on Linux. Windows/WSL remain unverified.
+
+### 1. Install the existing wheel
+
+Run these commands in a new terminal directory. No Git checkout or build tools are needed:
 
 ```sh
+mkdir token-inventory
+cd token-inventory
+python3 -m venv .venv
+.venv/bin/python -m pip install --no-deps https://morkeeth.github.io/where-did-the-tokens-go-public/downloads/local_token_inventory-0.1.0-py3-none-any.whl
+.venv/bin/token-inventory --demo
+```
+
+The download needs internet access; the running app makes no external requests. Open **http://127.0.0.1:58631/** and click **Explore example**. You should see invented projects and a blue API-price estimate. Those rates are fictional, not your bill. The terminal stays running while you use the page. Stop it with **Ctrl-C**.
+
+If port 58631 is busy, append `--port 58632` and open http://127.0.0.1:58632/ instead. Keep the app on this machine; do not expose it through a tunnel or public host.
+
+### 2. Connect your own records privately
+
+In the same directory, start again without `--demo`:
+
+```sh
+.venv/bin/token-inventory
+```
+
+1. Open the printed loopback address. No usage records have been read yet.
+2. Expand **Sources and privacy**. Select Claude Code and/or Codex, and check the record-folder paths. Unselect clients you do not use. Default roots are `~/.claude/projects`, `~/.codex/sessions` and `~/.codex/archived_sessions`.
+3. For counters alone, uncheck **Use structural metadata**. Enable it only if you want local project/activity suggestions. Folder hints are a separate optional control; project names can still reveal private information.
+4. Click **Connect local counters**. The overview now describes the selected records. Without configured model rates, the dollar estimate stays unknown; token counters still work.
+5. Use **Review** to correct uncertain intervals. Reading one session's transcript needs separate permission. **Connections & privacy** revokes the current connection; **Forget browser review choices** removes separately saved browser choices.
+
+The app reads existing compatible local JSONL records, not provider billing or cloud/deleted history. If a source is missing, use that client normally in a project, then recheck its actual record folder. An empty view is not proof of no usage. Cursor counters are unsupported. You can override folders in the browser or with `--claude PATH` and repeatable `--codex PATH`.
+
+Stop with Ctrl-C. To return later, `cd token-inventory` from its parent directory and run `.venv/bin/token-inventory` again. Source records are never modified. Server rows and grants clear on exit; browser review choices remain until forgotten.
+
+### Other ways to start
+
+**Prefer a GitHub checkout?** These commands run the same app directly from public source, with no installation or runtime dependencies:
+
+```sh
+git clone https://github.com/Morkeeth/where-did-the-tokens-go-public.git
+cd where-did-the-tokens-go-public
 python3 -m tokens.inventory --demo
 ```
 
-Open the printed loopback address. This mode uses only synthetic counters and invented illustrative rates. Stop with Ctrl-C.
+Stop with Ctrl-C, then run `python3 -m tokens.inventory` to follow the private connection steps above. The source ZIP works the same way after extraction.
 
-For your own usage, restart without `--demo`:
-
-```sh
-python3 -m tokens.inventory
-```
-
-No counter files are read on startup. In the browser, select Claude Code and/or Codex and explicitly connect the local record folders. Structural metadata suggestions and visible folder hints have separate controls. Transcript permission is separate again and scoped to one selected session. Revoking access clears the running server's rows, scan grants and agent exchange; it does not delete source records. Browser review choices persist until forgotten.
-
-Default JSONL roots are `~/.claude/projects`, `~/.codex/sessions` and `~/.codex/archived_sessions`. Override them in the browser or with `--claude PATH` and repeatable `--codex PATH`. An empty or missing compatible root does not establish no usage. This app does not install or sign in to either client. Cursor counters, provider billing, cloud-only sessions and deleted records are unsupported.
-
-## Install the Python library and CLI
-
-Install the supplied wheel, or a clean source checkout:
+**Already downloaded the wheel?** In the virtual environment above, replace the URL installation command with:
 
 ```sh
-python3 -m pip install ./local_token_inventory-0.1.0-py3-none-any.whl
-# Or, in the source directory:
-python3 -m pip install .
-token-inventory --demo
+.venv/bin/python -m pip install --no-deps ./local_token_inventory-0.1.0-py3-none-any.whl
 ```
 
-These commands use local artifacts; this candidate does not claim a published package-index release. The console commands are `token-inventory` and `token-inventory-agent`.
+The wheel file must be in the current directory, or use its actual path. Building from source is covered at the end of this README.
 
-For programmatic use, a caller explicitly chooses the directories to read:
+### Windows PowerShell: not yet verified on Windows
+
+Use an installed Python 3.10+ and the Python launcher. These commands avoid activation-script policy changes. They are provided as Windows syntax guidance, not a tested Windows compatibility claim:
+
+```powershell
+mkdir token-inventory
+cd token-inventory
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --no-deps https://morkeeth.github.io/where-did-the-tokens-go-public/downloads/local_token_inventory-0.1.0-py3-none-any.whl
+.\.venv\Scripts\token-inventory.exe --demo
+```
+
+Open the printed address, explore the synthetic example, then stop with Ctrl-C. For private use run `.\.venv\Scripts\token-inventory.exe` without `--demo`, and choose the actual local JSONL directories in Sources and privacy. WSL uses the Linux commands; records stored on Windows may need an explicit mounted path. Windows and WSL have not been exercised in this onboarding pass.
+
+## Use the Python library
+
+Installing the wheel makes `tokens` importable by that environment's Python from any directory. The app is one view over the same library, not a required hosted service:
 
 ```python
+from pathlib import Path
 from tokens.inventory import read_usage
 from tokens.pricing import estimate_usage
 
-usage = read_usage([("Claude Code", "/absolute/path/to/chosen/jsonl-root")])
-# Structural metadata is optional: pass attribute=True only for that scope.
-estimated = estimate_usage(usage, rates={})  # No configured model prices: unknown.
+# Invoke only after choosing and permitting this local record directory.
+root = Path.home() / ".claude" / "projects"
+usage = read_usage([("Claude Code", str(root))])
+estimated = estimate_usage(usage, rates={})  # No model prices configured: unknown.
 ```
 
-Library calls do not open a browser, scan by themselves on import, contact a provider or execute recorded commands. They read the roots supplied by the caller when invoked. Counter results exclude prompt/reply prose. The library defaults to attribute=False: project/activity attribution is Unknown and folder basenames are hidden. Pass attribute=True only with permission to return structural attribution and folder basenames. The browser and CLI hide folder hints unless separately allowed. Project metadata and folder basenames may themselves be sensitive.
+The library does nothing on import. Calling `read_usage` reads the supplied roots. Its default `attribute=False` excludes prompt/reply prose, leaves project/activity labels Unknown and hides folder basenames. Model names, dates, counters and hashed session IDs remain metadata; inspect before sharing. It starts no server or model and executes no recorded commands.
 
-With explicit `attribute=True`, attribution uses recorded repository/cwd fields and structural tool names. For an absolute recorded cwd, it checks whether a `.git` marker exists in that directory and up to eight ancestors; those existence checks can be outside the chosen log roots. It does not read project-tree files or `.git` contents. Returned metadata can include project/folder basenames and recorded tool names, so grant that scope only when appropriate. With the default `attribute=False`, these attribution checks are skipped.
+Only with permission for that extra scope, pass `attribute=True` for structural attribution. It uses recorded repository/cwd fields and tool names and can return project/folder basenames and tool names. For an absolute recorded cwd it checks `.git` existence there and up to eight ancestors, possibly outside the chosen log roots. It reads no project-tree files or `.git` contents. Browser and CLI folder hints remain separately controlled.
 
 ## Pricing
 
@@ -104,6 +147,12 @@ Transcript preview requires separate consent for an already-scanned session: `to
 Run `token-inventory --show-skill` to locate the installed `SKILL.md`. Copy its `local-token-inventory` folder into a skill directory your agent is configured to read. A separate skill ZIP is also provided. The skill explains the local-data and hosted-model boundary before requesting private data. It does not configure a client or authorize uploads.
 
 The CLI can be used by any local tool-capable client. This package includes no MCP server, provider plugin, credential bridge or automatic account connection; those integrations are not claimed.
+
+## Optional companion: Transcripto
+
+[Transcripto](https://github.com/Morkeeth/transcripto) is a separate tool for finding a remembered request and replaying its recorded work. Inventory answers “where did the recorded tokens go?”; replay can help inspect “what was requested and what result was recorded?” Its public README describes local search/replay and separately opt-in remote model features.
+
+**Proposed addition, not implemented:** a user-selected inventory interval could open a matching local Transcripto replay after separate transcript consent. This would need an explicit source/line mapping; the inventory's hashed session IDs alone do not establish that link. Preserve unknown results and let the user inspect evidence before changing attribution. Do not install Transcripto, index transcripts, start a model or share content as part of this setup. The inventory remains usable on its own.
 
 ## Measurement limits and privacy
 
