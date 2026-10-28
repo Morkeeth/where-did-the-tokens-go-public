@@ -97,7 +97,7 @@ usage = read_usage([("Claude Code", str(root))])
 estimated = estimate_usage(usage, rates={})  # No model prices configured: unknown.
 ```
 
-The library does nothing on import. Calling `read_usage` reads the supplied roots. Its default `attribute=False` excludes prompt/reply prose, leaves project/activity labels Unknown and hides folder basenames. Model names, dates, counters and hashed session IDs remain metadata; inspect before sharing. It starts no server or model and executes no recorded commands.
+The library does nothing on import. Calling `read_usage` reads the supplied roots. Prompt/reply prose is excluded in both modes. With the default `attribute=False`, project/activity labels stay Unknown and folder basenames are hidden. Returned metadata still includes model names, dates, interval timestamps, counters, hashed session IDs and evidence strings, plus an issues count; inspect before sharing. It starts no server or model and executes no recorded commands.
 
 Only with permission for that extra scope, pass `attribute=True` for structural attribution. It uses recorded repository/cwd fields and tool names and can return project/folder basenames and tool names. For an absolute recorded cwd it checks `.git` existence there and up to eight ancestors, possibly outside the chosen log roots. It reads no project-tree files or `.git` contents. Browser and CLI folder hints remain separately controlled.
 
