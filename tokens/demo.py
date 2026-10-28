@@ -11,10 +11,10 @@ SAMPLE_RATES = {
 def sample_usage():
     rows=[]
     for day_index in range(30):
-        for session_index in range(5):
+        for session_index in range(6):
             harness='Claude Code' if session_index<3 else 'Codex'
-            project=['Harbor Notes','Trail Planner','Tiny Shop','Harbor Notes','Unknown'][session_index]
-            category='Agent-to-agent' if session_index==3 else 'Admin' if session_index==4 else 'Project work'
+            project=['Harbor Notes','Trail Planner','Tiny Shop','Harbor Notes','Unknown','No product'][session_index]
+            category='Agent-to-agent' if session_index==3 else 'Unknown' if session_index==4 else 'Admin' if session_index==5 else 'Project work'
             day=(date(2025,6,30)-timedelta(days=day_index)).isoformat()
             sid='synthetic-session-'+str(session_index)
             row_id=hashlib.sha256((sid+day).encode()).hexdigest()[:16]
