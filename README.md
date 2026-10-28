@@ -115,6 +115,14 @@ The static demo uses embedded synthetic data with browser-side interactions and 
 
 ## Build and verify
 
-With Python build tools available, run `python3 tools/build_release.py /path/to/output`. It creates a wheel, source distribution, source ZIP, skill ZIP and a static synthetic demo. Release files are built from an explicit source allowlist. Local data, credentials, build intermediates, private configuration, screenshots and Git history are excluded.
+Create an isolated build environment and install the build-only prerequisites (`setuptools>=77`, `packaging>=24.2` and `wheel`):
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install 'setuptools>=77' 'packaging>=24.2' wheel
+.venv/bin/python tools/build_release.py /path/to/output
+```
+
+These tools are only needed to build releases; the installed app still has no third-party runtime dependencies. It creates a wheel, source distribution, source ZIP, skill ZIP and a static synthetic demo. Release files are built from an explicit source allowlist. Local data, credentials, build intermediates, private configuration, screenshots and Git history are excluded.
 
 Run `python3 -m unittest discover -s tests`. Run `python3 tools/audit_release.py /path/to/output` to scan source, every file in archives and static output, including from an extracted source ZIP or plain folder. Add `--history` only in a Git checkout to scan all Git revisions; extracted archives have no history and this option fails with an explicit error. Such a scan supports the clean-source provenance; keyword matching alone cannot prove that arbitrary data is synthetic.

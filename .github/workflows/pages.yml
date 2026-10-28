@@ -17,10 +17,11 @@ jobs:
           fetch-depth: 0
       - name: Build and test
         run: |
-          python3 -m pip install 'setuptools>=77' wheel
-          python3 -m unittest discover -s tests
-          python3 tools/build_release.py release
-          python3 tools/audit_release.py release --history
+          python3 -m venv .venv
+          .venv/bin/python -m pip install 'setuptools>=77' 'packaging>=24.2' wheel
+          .venv/bin/python -m unittest discover -s tests
+          .venv/bin/python tools/build_release.py release
+          .venv/bin/python tools/audit_release.py release --history
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
