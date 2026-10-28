@@ -56,6 +56,8 @@ estimated = estimate_usage(usage, rates={})  # No configured model prices: unkno
 
 Library calls do not open a browser, scan by themselves on import, contact a provider or execute recorded commands. They read the roots supplied by the caller when invoked. Counter results exclude prompt/reply prose. The library defaults to attribute=False: project/activity attribution is Unknown and folder basenames are hidden. Pass attribute=True only with permission to return structural attribution and folder basenames. The browser and CLI hide folder hints unless separately allowed. Project metadata and folder basenames may themselves be sensitive.
 
+With explicit `attribute=True`, attribution uses recorded repository/cwd fields and structural tool names. For an absolute recorded cwd, it checks whether a `.git` marker exists in that directory and up to eight ancestors; those existence checks can be outside the chosen log roots. It does not read project-tree files or `.git` contents. Returned metadata can include project/folder basenames and recorded tool names, so grant that scope only when appropriate. With the default `attribute=False`, these attribution checks are skipped.
+
 ## Pricing
 
 API-equivalent estimates are not invoices or subscriptions. No prices are downloaded. Unknown model rates remain unknown; a partially priced view shows a known-rate subtotal.
