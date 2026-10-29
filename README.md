@@ -1,6 +1,14 @@
 # Local Token Inventory
 
-A private, playful view of what your coding-agent usage supported. See projects, review uncertain work and keep agent communication attached to the project it serves.
+**Local Token Inventory shows you, on your own machine, which projects your coding-agent usage went into, so you can see where the tokens went without sending your records anywhere.**
+
+The problem: coding agents write usage records to folders on your disk, and nothing turns them into a per-project picture you can review.
+
+For people who use coding agents (Codex and similar) and want a private view of their own usage rather than a provider bill.
+
+It reads the local JSONL records those clients already keep, asks for consent per source, lets you review uncertain intervals, and estimates a cost only once you give it model rates.
+
+No account, no API key, no third-party dependency, and the running app makes no external requests. Try the synthetic demo first: https://morkeeth.github.io/where-did-the-tokens-go-public/
 
 [Try the synthetic mock-up](https://morkeeth.github.io/where-did-the-tokens-go-public/) · [Download packages](https://morkeeth.github.io/where-did-the-tokens-go-public/packages.html)
 
