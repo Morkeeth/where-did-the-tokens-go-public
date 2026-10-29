@@ -1,5 +1,25 @@
 # Local Token Inventory
 
+## TLDR
+
+Review local coding-agent usage by project and inspect uncertain attribution.<br>
+For people who want a private account of their own recorded agent work.<br>
+Start with the synthetic public demo; private setup reads only the sources you choose.
+
+## The problem and approach
+
+The problem: coding agents write usage records to folders on your disk, and nothing turns them into a per-project picture you can review.
+
+It reads the local JSONL records those clients already keep, asks for consent per source, lets you review uncertain intervals, and estimates a cost only once you give it model rates.
+
+No account, no API key, no third-party dependency, and the running app makes no external requests. Try the synthetic demo first: https://morkeeth.github.io/where-did-the-tokens-go-public/
+
+## Review and pick up the work
+
+[Agent guide](AGENTS.md)
+
+Start with the linked source, setup and evidence. Recorded demos and sample data keep their original scope; use the repository instructions for a fresh run.
+
 A private, playful view of what your coding-agent usage supported. See projects, review uncertain work and keep agent communication attached to the project it serves.
 
 [Try the synthetic mock-up](https://morkeeth.github.io/where-did-the-tokens-go-public/) · [Download packages](https://morkeeth.github.io/where-did-the-tokens-go-public/packages.html)
@@ -175,3 +195,7 @@ python3 -m venv .venv
 These tools are only needed to build releases; the installed app still has no third-party runtime dependencies. It creates a wheel, source distribution, source ZIP, skill ZIP and a static synthetic demo. Release files are built from an explicit source allowlist. Local data, credentials, build intermediates, private configuration, screenshots and Git history are excluded.
 
 Run `python3 -m unittest discover -s tests`. Run `python3 tools/audit_release.py /path/to/output` to scan source, every file in archives and static output, including from an extracted source ZIP or plain folder. Add `--history` only in a Git checkout to scan all Git revisions; extracted archives have no history and this option fails with an explicit error. Such a scan supports the clean-source provenance; keyword matching alone cannot prove that arbitrary data is synthetic.
+
+## License and data boundaries
+
+Code terms: [LICENSE](LICENSE). Data, provider responses, media, fonts and other third-party assets may have separate terms. Repository access alone does not grant rights to those materials. 
