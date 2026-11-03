@@ -1,0 +1,41 @@
+Local Token Inventory: 10-minute outsider check (macOS/Linux)
+
+Use invented records only. No sign-in, API key, personal logs or uploads.
+This is a test script, not an invitation to anyone.
+
+1. Follow README installation in an empty directory. Install the reviewed
+   0.1.1 wheel when available. For a staged wheel, substitute its local path.
+   In that terminal, create a disposable home and one invented record:
+
+   TEST_HOME=$(mktemp -d)
+   mkdir -p "$TEST_HOME/.claude/projects/example"
+   cat > "$TEST_HOME/.claude/projects/example/test.jsonl" <<'JSON'
+{"type":"assistant","timestamp":"2026-11-03T10:00:00Z","message":{"id":"invented","model":"Invented model","usage":{"input_tokens":40,"output_tokens":7},"content":[{"type":"text","text":"Invented reply"}]}}
+JSON
+
+2. Run: HOME="$TEST_HOME" .venv/bin/token-inventory --demo
+   Open http://127.0.0.1:58631 in a private browser window.
+   Click Explore example. Expect invented projects and an illustrative dollar
+   estimate. Stop the terminal server with Ctrl-C.
+
+3. Run: HOME="$TEST_HOME" .venv/bin/token-inventory
+   Reload the same address. Expect "No usage records have been read".
+   Expand Sources and privacy. The folders must point inside TEST_HOME.
+   Uncheck Codex and Use structural metadata. Click Recheck folders.
+   Codex must remain unchecked. Do not connect your actual record folders.
+
+4. Click Connect local counters. Expect 1 session, 47 recorded tokens in
+   Needs attribution, no project metadata and no configured dollar price.
+   Open Review. Give the invented interval project "Example project" and
+   category "Project work"; save. Overview should now show that project,
+   still with 47 tokens and no dollar price.
+
+5. Click Connections & privacy. Expect the locked onboarding view again.
+   Reconnect to verify the same counter total; browser review choices may
+   remain until Forget browser review choices. Stop with Ctrl-C.
+   The invented source file must still contain the original single JSON line.
+
+Record: step, expected result, actual result, OS/Python/browser version.
+A screenshot may show only invented data. Keep all results local for review.
+The terminal app is not provider billing; unsupported or absent records do
+not establish no usage. Windows/WSL are outside this test's verified scope.

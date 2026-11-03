@@ -30,7 +30,7 @@ Run these commands in a new terminal directory. No Git checkout or build tools a
 mkdir token-inventory
 cd token-inventory
 python3 -m venv .venv
-.venv/bin/python -m pip install --no-deps https://morkeeth.github.io/where-did-the-tokens-go-public/downloads/local_token_inventory-0.1.0-py3-none-any.whl
+.venv/bin/python -m pip install --no-deps https://morkeeth.github.io/where-did-the-tokens-go-public/downloads/local_token_inventory-0.1.1-py3-none-any.whl
 .venv/bin/token-inventory --demo
 ```
 
@@ -71,7 +71,7 @@ Stop with Ctrl-C, then run `python3 -m tokens.inventory` to follow the private c
 **Already downloaded the wheel?** In the virtual environment above, replace the URL installation command with:
 
 ```sh
-.venv/bin/python -m pip install --no-deps ./local_token_inventory-0.1.0-py3-none-any.whl
+.venv/bin/python -m pip install --no-deps ./local_token_inventory-0.1.1-py3-none-any.whl
 ```
 
 The wheel file must be in the current directory, or use its actual path. Building from source is covered at the end of this README.
@@ -84,11 +84,15 @@ Use an installed Python 3.10+ and the Python launcher. These commands avoid acti
 mkdir token-inventory
 cd token-inventory
 py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install --no-deps https://morkeeth.github.io/where-did-the-tokens-go-public/downloads/local_token_inventory-0.1.0-py3-none-any.whl
+.\.venv\Scripts\python.exe -m pip install --no-deps https://morkeeth.github.io/where-did-the-tokens-go-public/downloads/local_token_inventory-0.1.1-py3-none-any.whl
 .\.venv\Scripts\token-inventory.exe --demo
 ```
 
 Open the printed address, explore the synthetic example, then stop with Ctrl-C. For private use run `.\.venv\Scripts\token-inventory.exe` without `--demo`, and choose the actual local JSONL directories in Sources and privacy. WSL uses the Linux commands; records stored on Windows may need an explicit mounted path. Windows and WSL have not been exercised in this onboarding pass.
+
+## Check the setup without personal records
+
+Use [the 10-minute outsider test](OUTSIDER-TEST.txt) to exercise the demo, source choices, counter consent, correction and revocation with one invented record in a disposable home directory. It requires no sign-in or personal records.
 
 ## Use the Python library
 
@@ -182,4 +186,4 @@ python3 -m venv .venv
 
 These tools are only needed to build releases; the installed app still has no third-party runtime dependencies. It creates a wheel, source distribution, source ZIP, skill ZIP and a static synthetic demo. Release files are built from an explicit source allowlist. Local data, credentials, build intermediates, private configuration, screenshots and Git history are excluded.
 
-Run `python3 -m unittest discover -s tests`. Run `python3 tools/audit_release.py /path/to/output` to scan source, every file in archives and static output, including from an extracted source ZIP or plain folder. Add `--history` only in a Git checkout to scan all Git revisions; extracted archives have no history and this option fails with an explicit error. Such a scan supports the clean-source provenance; keyword matching alone cannot prove that arbitrary data is synthetic.
+Run `python3 -m unittest discover -s tests`. The optional real-Chrome consent regression in `tests/test_browser.py` runs when Playwright and Chrome are installed; it is skipped otherwise. Run `python3 tools/audit_release.py /path/to/output` to scan source, every file in archives and static output, including from an extracted source ZIP or plain folder. Add `--history` only in a Git checkout to scan all Git revisions; extracted archives have no history and this option fails with an explicit error. Such a scan supports the clean-source provenance; keyword matching alone cannot prove that arbitrary data is synthetic.
