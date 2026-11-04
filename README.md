@@ -92,7 +92,7 @@ Open the printed address, explore the synthetic example, then stop with Ctrl-C. 
 
 ## Check the setup without personal records
 
-Use [the 10-minute outsider test](OUTSIDER-TEST.txt) to exercise the demo, source choices, counter consent, correction and revocation with one invented record in a disposable home directory. It requires no sign-in or personal records.
+Use [the 10-minute outsider test](https://github.com/Morkeeth/where-did-the-tokens-go-public/blob/main/OUTSIDER-TEST.txt) to exercise the demo, source choices, counter consent, correction and revocation with one invented record in a disposable home directory. It requires no sign-in or personal records.
 
 ## Use the Python library
 
