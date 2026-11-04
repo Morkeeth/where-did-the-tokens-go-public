@@ -1,4 +1,4 @@
-include README.md LICENSE pyproject.toml MANIFEST.in
+include README.md LICENSE pyproject.toml MANIFEST.in OUTSIDER-TEST.txt
 recursive-include tokens *.py *.html *.md
 recursive-include tools *.py
 recursive-include tests *.py

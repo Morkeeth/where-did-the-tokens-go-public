@@ -1,4 +1,4 @@
-"""Optional real-Chrome consent regression: pip install playwright to run."""
+"""Browser consent regression. CI requires Playwright and Chromium; local runs use Chrome."""
 import os
 from pathlib import Path
 import socket
@@ -11,6 +11,8 @@ from urllib.request import urlopen
 try:
     from playwright.sync_api import sync_playwright
 except ImportError:
+    if os.environ.get('INVENTORY_REQUIRE_BROWSER') == '1':
+        raise
     sync_playwright = None
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,9 +39,19 @@ class BrowserConsent(unittest.TestCase):
                         urlopen(url, timeout=.2).close()
                         break
                     except OSError:
+                        if process.poll() is not None:
+                            self.fail('Inventory exited before becoming ready')
                         time.sleep(.03)
+                else:
+                    self.fail('Inventory did not start within the readiness window')
                 with sync_playwright() as pw:
-                    browser = pw.chromium.launch(channel='chrome', headless=True, chromium_sandbox=True)
+                    channel = os.environ.get('INVENTORY_BROWSER_CHANNEL', 'chrome')
+                    try:
+                        browser = pw.chromium.launch(channel=channel or None, headless=True, chromium_sandbox=True)
+                    except Exception as error:
+                        if os.environ.get('INVENTORY_REQUIRE_BROWSER') == '1':
+                            raise
+                        self.skipTest('Browser unavailable: ' + str(error).splitlines()[0])
                     try:
                         page = browser.new_page(viewport={'width':390, 'height':844})
                         scans = []

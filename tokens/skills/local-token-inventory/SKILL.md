@@ -9,7 +9,7 @@ The Python app and CLI make no external requests. Your coding agent may use a ho
 
 ## Setup
 
-Install the supplied wheel with `python -m pip install ./local_token_inventory-0.1.0-py3-none-any.whl`, or install a clean source directory with `python -m pip install .`. Python 3.10+ is required; the runtime has no third-party dependencies. Do not install, sign in to or copy credentials from a coding-agent client as part of setup.
+Install the supplied wheel with `python -m pip install ./local_token_inventory-0.1.1-py3-none-any.whl`, or install a clean source directory with `python -m pip install .`. Python 3.10+ is required; the runtime has no third-party dependencies. Do not install, sign in to or copy credentials from a coding-agent client as part of setup.
 
 Open the printed address. Let the user choose Claude Code and/or Codex and connect the desired local JSONL directories. Counter permission, structural metadata suggestions, optional folder hints and per-session transcript text are distinct controls. Cursor counters, cloud-only history and deleted records are unsupported. Missing compatible records do not prove no usage.
 
