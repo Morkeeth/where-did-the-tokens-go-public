@@ -1,4 +1,4 @@
-"""Browser consent regression. CI requires Playwright and Chromium; local runs use Chrome."""
+"""Browser consent regression. CI requires Playwright and Google Chrome; local runs use Chrome."""
 import os
 from pathlib import Path
 import socket

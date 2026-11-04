@@ -18,11 +18,11 @@ jobs:
       - name: Install browser test tools
         run: |
           python3 -m pip install playwright
-          python3 -m playwright install --with-deps chromium
+          python3 -m playwright install --with-deps chrome
       - name: Consent browser regression
         env:
           INVENTORY_REQUIRE_BROWSER: '1'
-          INVENTORY_BROWSER_CHANNEL: ''
+          INVENTORY_BROWSER_CHANNEL: 'chrome'
         run: python3 -m unittest discover -s tests -p test_browser.py
       - name: Build and test
         run: |
