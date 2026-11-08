@@ -2,7 +2,9 @@
 
 **Local Token Inventory shows you, on your own machine, which projects your coding-agent usage went into, so you can see where the tokens went without sending your records anywhere.**
 
-The problem: coding agents write usage records to folders on your disk, and nothing turns them into a per-project picture you can review.
+Coding agents already write usage records to folders on your disk. [ccusage](https://github.com/ccusage/ccusage) reads them into daily, monthly and session reports in your terminal, and can group Claude Code usage by project. If that answers your question, use it.
+
+This adds a private browser view you can review: you grant access one source at a time, each recorded interval is sorted into project work, admin, agent-to-agent, mixed or unknown, you correct the ones it got wrong, and anything it cannot place stays visible as unknown.
 
 For people who use coding agents (Codex and similar) and want a private view of their own usage rather than a provider bill.
 
