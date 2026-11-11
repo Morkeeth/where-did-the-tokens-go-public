@@ -1,6 +1,6 @@
 ---
 name: local-token-inventory
-description: Set up or review the Local Token Inventory Python app for local Claude Code and Codex JSONL counters, with explicit data-sharing scope. Use for this app's installation, usage summaries and interval attribution reviews; not provider account access or billing claims.
+description: Set up or review the Local Token Inventory Python app for local Claude Code, Codex and Cursor counters, with explicit data-sharing scope. Use for this app's installation, usage summaries and interval attribution reviews; not provider account access or billing claims.
 ---
 
 Start the installed app with `token-inventory` or `python -m tokens.inventory`. It binds to the printed loopback address and reads no counter files until connected. To explore without private records, use `--demo`.
@@ -9,9 +9,9 @@ The Python app and CLI make no external requests. Your coding agent may use a ho
 
 ## Setup
 
-Install the supplied wheel with `python -m pip install ./local_token_inventory-0.1.1-py3-none-any.whl`, or install a clean source directory with `python -m pip install .`. Python 3.10+ is required; the runtime has no third-party dependencies. Do not install, sign in to or copy credentials from a coding-agent client as part of setup.
+Install the supplied wheel with `python -m pip install ./local_token_inventory-0.1.2-py3-none-any.whl`, or install a clean source directory with `python -m pip install .`. Python 3.10+ is required; the runtime has no third-party dependencies. Do not install, sign in to or copy credentials from a coding-agent client as part of setup.
 
-Open the printed address. Let the user choose Claude Code and/or Codex and connect the desired local JSONL directories. Counter permission, structural metadata suggestions, optional folder hints and per-session transcript text are distinct controls. Cursor counters, cloud-only history and deleted records are unsupported. Missing compatible records do not prove no usage.
+Open the printed address. Let the user choose Claude Code, Codex and/or Cursor and connect the desired local directories. Counter permission, structural metadata suggestions, optional folder hints and per-session transcript text are distinct controls. Cursor has no token counters in its agent transcripts. Offer `python -m tokens.cursor_hook --install` only after the user agrees to a local stop hook; it appends counters to `~/.cursor/usage-ledger/turns.jsonl` and does not read transcripts or call Cursor. Cloud-only history, subagent tokens and deleted records stay absent. Missing compatible records do not prove no usage.
 
 For Python library use, `read_usage(roots)` defaults to counters alone (`attribute=False`), with Unknown project/activity labels and hidden folder basenames. Only pass `attribute=True` after permission for structural attribution and folder basenames.
 
@@ -20,7 +20,7 @@ For Python library use, `read_usage(roots)` defaults to counters alone (`attribu
 The agent CLI only accepts an HTTP loopback address. For a non-default port, pass `--url` with the printed address.
 
 - `token-inventory-agent discover`: directory discovery only; returned paths can still be private.
-- `token-inventory-agent scan --allow-counters --allow-attribution --harness 'Claude Code' --harness Codex`: read explicitly chosen counters and structural metadata. Omit `--allow-attribution` for counters alone. Optional folder hints require `--allow-folders`.
+- `token-inventory-agent scan --allow-counters --allow-attribution --harness 'Claude Code' --harness Codex --harness Cursor`: read explicitly chosen counters and structural metadata. Omit `--allow-attribution` for counters alone. Optional folder hints require `--allow-folders`. Omit `--harness Cursor` unless the user has installed the local ledger hook and agreed to include it.
 - `token-inventory-agent summary --allow-summary`: aggregate counters for all connected records. Inspect the source scope and coverage limits.
 - `token-inventory-agent review --allow-summary`: uncertain intervals. Use returned row IDs, never filesystem paths.
 - `token-inventory-agent assign --allow-assignment --row-id <actual-id> --project '<chosen-project>' --category 'Project work'`: change only that interval's reviewed metadata. Valid categories: Project work, Admin, Agent-to-agent, Unknown, Mixed. Keep uncertainty when evidence is insufficient. A relay can still belong to the project it supports.

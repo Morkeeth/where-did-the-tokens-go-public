@@ -15,8 +15,8 @@ def main():
     parser.add_argument('--url',default='http://127.0.0.1:58631')
     for scope in ['counters','attribution','folders','summary','assignment','reply','transcript','revoke']:
         parser.add_argument('--allow-'+scope,action='store_true')
-    parser.add_argument('--claude');parser.add_argument('--codex',action='append')
-    parser.add_argument('--harness',action='append',choices=['Claude Code','Codex']);parser.add_argument('--session');parser.add_argument('--row-id')
+    parser.add_argument('--claude');parser.add_argument('--codex',action='append');parser.add_argument('--cursor',action='append')
+    parser.add_argument('--harness',action='append',choices=['Claude Code','Codex','Cursor']);parser.add_argument('--session');parser.add_argument('--row-id')
     parser.add_argument('--project');parser.add_argument('--category',choices=['Project work','Admin','Agent-to-agent','Unknown','Mixed'])
     parser.add_argument('--reply-file',type=Path)
     args=parser.parse_args();url=urlsplit(args.url)
@@ -43,6 +43,7 @@ def main():
             roots={}
             if args.claude:roots['Claude Code']=[args.claude]
             if args.codex:roots['Codex']=args.codex
+            if args.cursor:roots['Cursor']=args.cursor
             if roots:options['roots']=roots
             result=request('/api/scan',options)
         elif args.action in ('summary','review','context'):

@@ -28,7 +28,7 @@ class TextOutsideScript(HTMLParser):
 class Release(unittest.TestCase):
     def test_javascript_cannot_accidentally_be_visible_as_page_text(self):
         page=(ROOT/'tokens/web/inventory.html').read_text();parser=TextOutsideScript();parser.feed(page);visible=''.join(parser.text)
-        self.assertEqual(parser.scripts,1);self.assertNotIn('const scanToken',visible);self.assertNotIn('function render',visible);self.assertIn('Claude Code and Codex JSONL counters',visible)
+        self.assertEqual(parser.scripts,1);self.assertNotIn('const scanToken',visible);self.assertNotIn('function render',visible);self.assertIn('Claude Code and Codex JSONL counters are supported. Cursor usage comes from a counters-only ledger',visible)
         self.assertEqual(page.count('const scanToken'),1)
 
     def test_unknown_prices_are_not_zero_and_partial_prices_remain_partial(self):

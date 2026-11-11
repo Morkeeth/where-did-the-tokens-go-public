@@ -32,7 +32,7 @@ Run these commands in a new terminal directory. No Git checkout or build tools a
 mkdir token-inventory
 cd token-inventory
 python3 -m venv .venv
-.venv/bin/python -m pip install --no-deps https://morkeeth.github.io/where-did-the-tokens-go-public/downloads/local_token_inventory-0.1.1-py3-none-any.whl
+.venv/bin/python -m pip install --no-deps https://morkeeth.github.io/where-did-the-tokens-go-public/downloads/local_token_inventory-0.1.2-py3-none-any.whl
 .venv/bin/token-inventory --demo
 ```
 
@@ -49,12 +49,20 @@ In the same directory, start again without `--demo`:
 ```
 
 1. Open the printed loopback address. No usage records have been read yet.
-2. Expand **Sources and privacy**. Select Claude Code and/or Codex, and check the record-folder paths. Unselect clients you do not use. Default roots are `~/.claude/projects`, `~/.codex/sessions` and `~/.codex/archived_sessions`.
+2. Expand **Sources and privacy**. Select Claude Code, Codex, and/or Cursor, and check the record-folder paths. Unselect clients you do not use. Default roots are `~/.claude/projects`, `~/.codex/sessions`, `~/.codex/archived_sessions`, and `~/.cursor/usage-ledger`.
 3. For counters alone, uncheck **Use structural metadata**. Enable it only if you want local project/activity suggestions. Folder hints are a separate optional control; project names can still reveal private information.
 4. Click **Connect local counters**. The overview now describes the selected records. Without configured model rates, the dollar estimate stays unknown; token counters still work.
 5. Use **Review** to correct uncertain intervals. Reading one session's transcript needs separate permission. **Connections & privacy** revokes the current connection; **Forget browser review choices** removes separately saved browser choices.
 
-The app reads existing compatible local JSONL records, not provider billing or cloud/deleted history. If a source is missing, use that client normally in a project, then recheck its actual record folder. An empty view is not proof of no usage. Cursor counters are unsupported. You can override folders in the browser or with `--claude PATH` and repeatable `--codex PATH`.
+The app reads existing compatible local JSONL records, not provider billing or cloud/deleted history. If a source is missing, use that client normally in a project, then recheck its actual record folder. An empty view is not proof of no usage. You can override folders in the browser or with `--claude PATH`, repeatable `--codex PATH`, and repeatable `--cursor PATH`.
+
+Cursor does not write token counters into agent transcripts, and this app does not read Cursor's application databases or account. Coverage starts only after you install the local stop hook, from the same environment as the app:
+
+```sh
+.venv/bin/python -m tokens.cursor_hook --install
+```
+
+That adds a `stop` command to `~/.cursor/hooks.json` and leaves any other hooks in place. Each later parent-agent turn appends counters, model, time and one workspace root to `~/.cursor/usage-ledger/turns.jsonl`. The hook does not read the transcript, does not store your email, and does not send the payload anywhere. Cursor's reported input already includes cache reads and writes; the inventory subtracts those when both cache fields are present. Subagent tokens are not in the parent `stop` payload, and turns from before the hook are absent. Wire only `stop`. `afterAgentResponse` repeats the same generation and would not add a second copy, but it is not required.
 
 Stop with Ctrl-C. To return later, `cd token-inventory` from its parent directory and run `.venv/bin/token-inventory` again. Source records are never modified. Server rows and grants clear on exit; browser review choices remain until forgotten.
 
@@ -73,7 +81,7 @@ Stop with Ctrl-C, then run `python3 -m tokens.inventory` to follow the private c
 **Already downloaded the wheel?** In the virtual environment above, replace the URL installation command with:
 
 ```sh
-.venv/bin/python -m pip install --no-deps ./local_token_inventory-0.1.1-py3-none-any.whl
+.venv/bin/python -m pip install --no-deps ./local_token_inventory-0.1.2-py3-none-any.whl
 ```
 
 The wheel file must be in the current directory, or use its actual path. Building from source is covered at the end of this README.
@@ -86,7 +94,7 @@ Use an installed Python 3.10+ and the Python launcher. These commands avoid acti
 mkdir token-inventory
 cd token-inventory
 py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install --no-deps https://morkeeth.github.io/where-did-the-tokens-go-public/downloads/local_token_inventory-0.1.1-py3-none-any.whl
+.\.venv\Scripts\python.exe -m pip install --no-deps https://morkeeth.github.io/where-did-the-tokens-go-public/downloads/local_token_inventory-0.1.2-py3-none-any.whl
 .\.venv\Scripts\token-inventory.exe --demo
 ```
 
@@ -135,7 +143,7 @@ The CLI starts no model and makes only HTTP loopback requests, bypassing network
 
 ```sh
 token-inventory-agent discover
-token-inventory-agent scan --allow-counters --allow-attribution --harness 'Claude Code' --harness Codex
+token-inventory-agent scan --allow-counters --allow-attribution --harness 'Claude Code' --harness Codex --harness Cursor
 token-inventory-agent summary --allow-summary
 token-inventory-agent review --allow-summary
 ```
@@ -170,7 +178,7 @@ The CLI can be used by any local tool-capable client. This package includes no M
 
 ## Measurement limits and privacy
 
-Claude streaming message counters use positive per-message updates. Codex cumulative counters are differenced per file; cached input is subtracted before counting uncached input. Counter resets begin new segments. Copies across files can duplicate usage. Attribution uses recorded metadata intervals, not fractional allocations or exact project causality. Tokens do not establish useful output, efficiency or money paid.
+Claude streaming message counters use positive per-message updates. Codex cumulative counters are differenced per file; cached input is subtracted before counting uncached input. Cursor parent turns come from the optional stop-hook ledger; the same generation is counted once, and reported input includes cache until the cache fields are subtracted. Counter resets begin new segments. Copies across files can duplicate usage. Attribution uses recorded metadata intervals, not fractional allocations or exact project causality. Tokens do not establish useful output, efficiency or money paid.
 
 The app binds to `127.0.0.1`, checks the Host header, requires a page capability for counter/agent actions, serves no arbitrary files, and has no analytics or external assets. It is a local single-user tool, not an authenticated multi-user service. Do not expose it through a tunnel, public reverse proxy or shared host.
 
