@@ -3,7 +3,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 import re
 
-GENERIC = {'home','users','code','projects','src','tests','tmp','desktop','downloads','.claude','.codex','root'}
+GENERIC = {'home','users','code','projects','src','tests','tmp','desktop','downloads','.claude','.codex','.cursor','root'}
 CATEGORIES = {'Project work','Admin','Agent-to-agent','Unknown','Mixed'}
 
 

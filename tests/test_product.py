@@ -49,6 +49,6 @@ class ProductTest(unittest.TestCase):
             self.assertEqual(sum(r['input']+r['output']+r['cache_read'] for r in c),160)
             self.assertEqual({r['project'] for r in c},{'alpha','beta'});self.assertEqual(c[0]['work_category'],'Agent-to-agent')
             inherited=[r for r in rs if 'parent session' in r['project_evidence']];self.assertEqual(len(inherited),1);self.assertEqual(inherited[0]['project'],'alpha');self.assertTrue(inherited[0]['review_required']);self.assertEqual(inherited[0]['work_category'],'Unknown')
-            d=discovery([('Claude Code',str(root/'missing')),('Codex',str(codex))]);self.assertEqual(d['harnesses'][0]['status'],'not_found');self.assertEqual(d['harnesses'][1]['status'],'discovered');self.assertEqual(d['harnesses'][2]['status'],'unsupported');self.assertFalse(d['content_read'])
+            d=discovery([('Claude Code',str(root/'missing')),('Codex',str(codex))]);self.assertEqual(d['harnesses'][0]['status'],'not_found');self.assertEqual(d['harnesses'][1]['status'],'discovered');self.assertEqual(d['harnesses'][2]['harness'],'Cursor');self.assertEqual(d['harnesses'][2]['status'],'not_found');self.assertEqual(d['harnesses'][2]['configured_roots'],[]);self.assertFalse(d['content_read'])
 
 if __name__=='__main__':unittest.main()

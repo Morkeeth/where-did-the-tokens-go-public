@@ -13,7 +13,7 @@ sys.path.insert(0,str(ROOT))
 from tokens.demo import sample_usage,SAMPLE_RATES
 from tokens.pricing import estimate_usage
 
-FILES=['OUTSIDER-TEST.txt','tests/test_browser.py','README.md','LICENSE','pyproject.toml','tokens/__init__.py','tokens/inventory.py','tokens/agent.py','tokens/attribution.py','tokens/connections.py','tokens/policy.py','tokens/pricing.py','tokens/demo.py','tokens/web/inventory.html','tokens/skills/local-token-inventory/SKILL.md','MANIFEST.in','tools/build_release.py','tools/audit_release.py','.github/workflows/pages.yml','tests/test_product.py','tests/test_local_server.py','tests/test_release.py']
+FILES=['OUTSIDER-TEST.txt','tests/test_browser.py','README.md','LICENSE','pyproject.toml','tokens/__init__.py','tokens/inventory.py','tokens/agent.py','tokens/attribution.py','tokens/connections.py','tokens/cursor.py','tokens/cursor_hook.py','tokens/policy.py','tokens/pricing.py','tokens/demo.py','tokens/web/inventory.html','tokens/skills/local-token-inventory/SKILL.md','MANIFEST.in','tools/build_release.py','tools/audit_release.py','.github/workflows/pages.yml','tests/test_product.py','tests/test_local_server.py','tests/test_release.py','tests/test_cursor.py']
 
 
 def main():
