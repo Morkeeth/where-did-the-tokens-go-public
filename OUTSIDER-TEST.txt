@@ -4,7 +4,7 @@ Use invented records only. No sign-in, API key, personal logs or uploads.
 This is a test script, not an invitation to anyone.
 
 1. Follow README installation in an empty directory. Install the reviewed
-   0.1.1 wheel when available. For a staged wheel, substitute its local path.
+   0.1.2 wheel when available. For a staged wheel, substitute its local path.
    In that terminal, create a disposable home and one invented record:
 
    TEST_HOME=$(mktemp -d)
@@ -21,8 +21,9 @@ JSON
 3. Run: HOME="$TEST_HOME" .venv/bin/token-inventory
    Reload the same address. Expect "No usage records have been read".
    Expand Sources and privacy. The folders must point inside TEST_HOME.
-   Uncheck Codex and Use structural metadata. Click Recheck folders.
-   Codex must remain unchecked. Do not connect your actual record folders.
+   Uncheck Codex, Cursor and Use structural metadata. Click Recheck folders.
+   Codex and Cursor must remain unchecked. Do not connect your actual record folders.
+   Do not install the Cursor hook during this check.
 
 4. Click Connect local counters. Expect 1 session, 47 recorded tokens in
    Needs attribution, no project metadata and no configured dollar price.

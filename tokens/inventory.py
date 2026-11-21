@@ -17,6 +17,16 @@ def read_usage(roots, attribute=False):
             if path.is_symlink():
                 issues += 1
                 continue
+            if harness == 'Cursor':
+                try:
+                    from .cursor import read_cursor_file
+                    file_rows, file_issues = read_cursor_file(path, attribute)
+                    issues += file_issues
+                    rows.extend(file_rows)
+                    pending.append((file_rows, None))
+                except OSError:
+                    issues += 1
+                continue
             buckets, seen, previous, bounds = {}, {}, {}, {}
             last_signature, interval_index = None, 0
             current_model = 'Unknown model'
@@ -156,6 +166,7 @@ def main(argv=None):
     parser.add_argument('--port', type=int, default=58631)
     parser.add_argument('--claude', default='~/.claude/projects')
     parser.add_argument('--codex', action='append', help='Repeat for additional Codex record roots')
+    parser.add_argument('--cursor', action='append', help='Repeat for additional Cursor counter-ledger folders')
     parser.add_argument('--prices', type=Path, help='Optional local JSON rates per million tokens; no rates are fetched')
     parser.add_argument('--show-skill', action='store_true', help='Print the installed setup skill path and exit')
     args = parser.parse_args(argv)
@@ -175,10 +186,10 @@ def main(argv=None):
     selected_roots = []
     connected = set()
     agent_exchange = {'context': None, 'reply': None}
-    roots = [('Claude Code', args.claude)] + [('Codex', p) for p in (args.codex or ['~/.codex/sessions', '~/.codex/archived_sessions'])]
+    roots = [('Claude Code', args.claude)] + [('Codex', p) for p in (args.codex or ['~/.codex/sessions', '~/.codex/archived_sessions'])] + [('Cursor', p) for p in (args.cursor or ['~/.cursor/usage-ledger'])]
     if args.demo:
-        roots=[('Claude Code','/synthetic/claude'),('Codex','/synthetic/codex')]
-    page = (Path(__file__).parent / 'web' / 'inventory.html').read_text().replace('__SCAN_TOKEN__', scan_token).replace('__STATIC_DEMO__','false').replace('__DEMO_PAYLOAD__','null').replace('__RUN_MODE__', 'DEMO · SYNTHETIC COUNTERS' if args.demo else 'LOCAL HOST · NO UPLOADS').replace('__CONNECT_LABEL__', 'Explore example' if args.demo else 'Connect local counters').replace('__CONNECT_EXPLAIN__', 'Explore the synthetic sample. No local records are read in demo mode.' if args.demo else 'Click Connect to read selected local Claude Code and Codex counter records. Project suggestions use local metadata; names stay on this machine. Transcript text is excluded. Adjust sources and privacy settings below.').replace('__CONNECT_STATUS__', 'Demo mode reads no local records.' if args.demo else 'No usage records have been read. Reading starts only when you click Connect.').encode()
+        roots=[('Claude Code','/synthetic/claude'),('Codex','/synthetic/codex'),('Cursor','/synthetic/cursor')]
+    page = (Path(__file__).parent / 'web' / 'inventory.html').read_text().replace('__SCAN_TOKEN__', scan_token).replace('__STATIC_DEMO__','false').replace('__DEMO_PAYLOAD__','null').replace('__RUN_MODE__', 'DEMO · SYNTHETIC COUNTERS' if args.demo else 'LOCAL HOST · NO UPLOADS').replace('__CONNECT_LABEL__', 'Explore example' if args.demo else 'Connect local counters').replace('__CONNECT_EXPLAIN__', 'Explore the synthetic sample. No local records are read in demo mode.' if args.demo else 'Click Connect to read selected local Claude Code, Codex and Cursor counter records. Cursor reads only its counters ledger. Project suggestions use local metadata; names stay on this machine. Transcript text is excluded. Adjust sources and privacy settings below.').replace('__CONNECT_STATUS__', 'Demo mode reads no local records.' if args.demo else 'No usage records have been read. Reading starts only when you click Connect.').encode()
     from .connections import discovery, configured_roots, summary
     class Handler(BaseHTTPRequestHandler):
         def parse_request(self):
@@ -254,7 +265,7 @@ def main(argv=None):
                     reply = {'mode': 'Local rule-based review; no AI model connected',
                              'sessions': sessions,
                              'next_action': ('Review the largest mixed session before assigning it. Keep it uncategorised if it contains several projects. Then compare one repeated routine against a saved baseline with the same output quality.' if sessions else 'Allow a counter scan before requesting a review.'),
-                             'limits': ['Token volume does not measure useful output.', 'Claude Code and Codex counters must be compared separately.', 'No changes made. No transcript read. No external message sent.']}
+                             'limits': ['Token volume does not measure useful output.', 'Claude Code, Codex and Cursor counters must be compared separately.', 'No changes made. No transcript read. No external message sent.']}
                     self.do_GET_response(json.dumps(reply).encode(), 'application/json')
                     return
                 if self.path == '/api/transcript':
@@ -263,12 +274,14 @@ def main(argv=None):
                         raise ValueError('Choose a session from your scanned overview')
                     if args.demo:
                         transcript = {'text':'USER\nShow my weekly work by project.\n\nASSISTANT\nThese are synthetic demo messages. No personal transcript was read.','messages':2,'truncated':False,'skipped_records':0,'redaction':'Synthetic demo. No personal text.','coverage':'Demo transcript only.'}
+                    elif any(r['harness']=='Cursor' and r['session']==session for r in payload['rows']) and not any(r['harness']!='Cursor' and r['session']==session for r in payload['rows']):
+                        raise ValueError('Cursor ledger stores counters only. Agent transcript text is not read.')
                     else:
                         transcript = local_transcript(session, selected_roots)
                     self.do_GET_response(json.dumps(transcript).encode(), 'application/json')
                     return
                 agents = options.get('agents', [])
-                if not isinstance(agents, list) or not all(a in ('Claude Code', 'Codex') for a in agents):
+                if not isinstance(agents, list) or not all(a in ('Claude Code', 'Codex', 'Cursor') for a in agents):
                     raise ValueError('Invalid agents')
                 roots = roots if args.demo else configured_roots(options, roots)
                 selected = [r for r in roots if r[0] in agents]
