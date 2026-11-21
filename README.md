@@ -1,5 +1,7 @@
 # Local Token Inventory
 
+> **Looking for the current tool?** The maintained version is [Morkeeth/token-inventory](https://github.com/Morkeeth/token-inventory) (`tokens scan`, `tokens serve`). This repo keeps the earlier consent-first browser app and its synthetic demo.
+
 **Local Token Inventory shows you, on your own machine, which projects your coding-agent usage went into, so you can see where the tokens went without sending your records anywhere.**
 
 Coding agents already write usage records to folders on your disk. [ccusage](https://github.com/ccusage/ccusage) reads them into daily, monthly and session reports in your terminal, and can group Claude Code usage by project. If that answers your question, use it.
